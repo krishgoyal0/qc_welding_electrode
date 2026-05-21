@@ -1,4 +1,4 @@
-package com.qc.electrode_qc_lab;
+package com.qc.electrodeqclab;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
