@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>QC Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="header">
+    <h1>🔧 Electrode QC Lab System</h1>
+    <p>Quality Control Dashboard</p>
+</div>
+
+<div class="container">
+    <div class="stats">
+        <div class="card pending">
+            <h3>⏳ PENDING</h3>
+            <div class="number" th:text="${pendingRequests.size()}">0</div>
+        </div>
+        <div class="card progress">
+            <h3>🔄 IN PROGRESS</h3>
+            <div class="number" th:text="${inProgressRequests.size()}">0</div>
+        </div>
+        <div class="card completed">
+            <h3>✅ COMPLETED</h3>
+            <div class="number" th:text="${completedRequests.size()}">0</div>
+        </div>
+        <div class="card released">
+            <h3>🚀 RELEASED</h3>
+            <div class="number" th:text="${releasedRequests.size()}">0</div>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <a href="/requests/new" class="btn btn-primary">➕ New Test Request</a>
+        <a href="/requests" class="btn btn-success">📋 View All Requests</a>
+        <a href="/init-tests" class="btn btn-warning">⚙️ Initialize Test Masters</a>
+    </div>
+
+    <div class="info-box">
+        <h3>📌 How to Use:</h3>
+        <ol>
+            <li><strong>First time?</strong> Click "Initialize Test Masters" to add 8 test types</li>
+            <li>Click <strong>"New Test Request"</strong> to create a QC request for a batch</li>
+            <li>Go to <strong>"View All Requests"</strong> → Click "Enter Results" for a request</li>
+            <li>Enter test values → System auto-calculates PASS/FAIL</li>
+            <li>When all tests PASS → Batch is automatically RELEASED</li>
+        </ol>
+    </div>
+</div>
+
+<footer>
+    <p>Electrode QC Lab System | Auto-validation & Batch Release</p>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>

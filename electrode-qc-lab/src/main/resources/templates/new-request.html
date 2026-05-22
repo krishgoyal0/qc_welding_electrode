@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>New Test Request</title>
+    <link rel="stylesheet" href="/css/css/style.css">
+</head>
+<body>
+<div class="form-container">
+    <h2>📝 Create New Test Request</h2>
+    <form action="/requests" method="post">
+        <label>Batch Number:</label>
+        <input type="text" name="batchNumber" required placeholder="Example: E7018-001">
+
+        <label>Electrode Type:</label>
+        <input type="text" name="electrodeType" required placeholder="Example: E7018">
+
+        <label>Requested By (Your Name):</label>
+        <input type="text" name="requestedBy" required placeholder="QC Officer Name">
+
+        <button type="submit">✅ Submit Request</button>
+    </form>
+    <div class="text-center" style="margin-top: 20px;">
+        <a href="/" class="back">← Back to Dashboard</a>
+    </div>
+</div>
+<script src="/js/main.js"></script>
+</body>
+</html>

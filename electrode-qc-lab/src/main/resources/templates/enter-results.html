@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Enter Test Results</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div class="container">
+    <div class="info-box">
+        <h2>🔬 Enter Test Results</h2>
+        <p><strong>Batch:</strong> <span th:text="${request.batchNumber}"></span></p>
+        <p><strong>Electrode Type:</strong> <span th:text="${request.electrodeType}"></span></p>
+        <p><strong>Status:</strong> <span th:text="${request.status}"></span></p>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(existingResults)}" class="info-box">
+        <h3>📊 Completed Tests</h3>
+        <table>
+            <thead><tr><th>Test Name</th><th>Measured Value</th><th>Result</th></tr></thead>
+            <tbody>
+            <tr th:each="res : ${existingResults}">
+                <td th:text="${res.testMaster.testName}">-</td>
+                <td th:text="${res.measuredValue} + ' ' + ${res.testMaster.unit}">-</td>
+                <td th:class="${res.isPassed ? 'pass' : 'fail'}" th:text="${res.isPassed ? '✓ PASS' : '✗ FAIL'}">-</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div th:unless="${request.status.name() == 'COMPLETED' or request.status.name() == 'RELEASED' or request.status.name() == 'REJECTED'}" class="info-box">
+        <h3>➕ Add New Test Result</h3>
+        <form action="/results" method="post">
+            <input type="hidden" name="requestId" th:value="${request.id}">
+
+            <label>Select Test:</label>
+            <select name="testMasterId" required>
+                <option th:each="test : ${allTests}" th:value="${test.id}"
+                        th:text="${test.testName} + ' (' + test.minStandardValue + ' - ' + test.maxStandardValue + ' ' + test.unit + ')'"></option>
+            </select>
+
+            <label>Measured Value:</label>
+            <input type="number" step="any" name="measuredValue" required placeholder="Enter value">
+
+            <label>Tested By (Your Name):</label>
+            <input type="text" name="testedBy" required placeholder="Lab Tech Name">
+
+            <button type="submit">📊 Submit Result</button>
+        </form>
+    </div>
+
+    <div th:if="${request.status.name() == 'COMPLETED' or request.status.name() == 'RELEASED'}" class="info-box">
+        <h3>✅ All Tests Completed!</h3>
+        <p th:if="${request.status.name() == 'COMPLETED'}">All mandatory tests passed. Batch will be released automatically.</p>
+        <p th:if="${request.status.name() == 'RELEASED'}">🎉 Batch has been RELEASED!</p>
+    </div>
+
+    <div th:if="${request.status.name() == 'REJECTED'}" class="info-box">
+        <h3>❌ Batch REJECTED</h3>
+        <p>One or more tests failed. Please check the results above.</p>
+    </div>
+
+    <a href="/requests" class="back">← Back to Requests</a>
+</div>
+<script src="/js/main.js"></script>
+</body>
+</html>

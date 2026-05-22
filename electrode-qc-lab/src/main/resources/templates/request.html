@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Test Requests</title>
+    <link rel="stylesheet" href="/css/css/style.css">
+</head>
+<body>
+<div class="container">
+    <a href="/" class="back">← Dashboard</a>
+    <h2>📋 All Test Requests</h2>
+
+    <table>
+        <thead>
+        <tr><th>Request #</th><th>Batch #</th><th>Electrode Type</th><th>Status</th><th>Requested By</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="req : ${requests}">
+            <td th:text="${req.requestNumber}">-</td>
+            <td th:text="${req.batchNumber}">-</td>
+            <td th:text="${req.electrodeType}">-</td>
+            <td th:class="'status-' + ${req.status.name().toLowerCase()}" th:text="${req.status}">-</td>
+            <td th:text="${req.requestedBy}">-</td>
+            <td>
+                <a th:href="@{/results/enter/{id}(id=${req.id})}" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;"
+                   th:if="${req.status.name() != 'RELEASED' and req.status.name() != 'COMPLETED' and req.status.name() != 'REJECTED'}">
+                    ✏️ Enter Results
+                </a>
+                <span th:unless="${req.status.name() != 'RELEASED' and req.status.name() != 'COMPLETED' and req.status.name() != 'REJECTED'}"
+                      th:text="${req.status.name() == 'RELEASED' ? '✅ Released' : (req.status.name() == 'COMPLETED' ? '✓ Complete' : '❌ Rejected')}">
+                        </span>
+            </td>
+        </tr>
+        <tr th:if="${requests.isEmpty()}">
+            <td colspan="6" class="text-center">No requests found. Click "New Test Request" to create one.</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="/js/main.js"></script>
+</body>
+</html>
