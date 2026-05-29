@@ -34,8 +34,7 @@
 
             <label>Select Test:</label>
             <select name="testMasterId" required>
-                <option th:each="test : ${allTests}" th:value="${test.id}"
-                        th:text="${test.testName} + ' (' + test.minStandardValue + ' - ' + test.maxStandardValue + ' ' + test.unit + ')'"></option>
+                <option th:each="test : ${allTests}" th:value="${test.id}" th:text="|${test.testName} (${test.minStandardValue} - ${test.maxStandardValue} ${test.unit})|"></option>
             </select>
 
             <label>Measured Value:</label>

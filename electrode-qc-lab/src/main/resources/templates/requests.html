@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>All Test Requests</title>
+    <link rel="stylesheet" href="/css/style.css?v=2">
+</head>
+<body>
+<div class="header">
+    <h1>📋 All Test Requests</h1>
+    <p>View and manage quality control requests</p>
+</div>
+
+<div class="container">
+    <a href="/" class="back">← Back to Dashboard</a>
+
+    <div style="overflow-x: auto;">
+        <table>
+            <thead>
+            <tr>
+                <th>Request #</th>
+                <th>Batch #</th>
+                <th>Electrode Type</th>
+                <th>Status</th>
+                <th>Requested By</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="req : ${requests}">
+                <td th:text="${req.requestNumber}">-</td>
+                <td th:text="${req.batchNumber}">-</td>
+                <td th:text="${req.electrodeType}">-</td>
+                <td>
+                    <span th:class="'status-' + ${req.status.name().toLowerCase()}" th:text="${req.status}"></span>
+                </td>
+                <td th:text="${req.requestedBy}">-</td>
+                <td>
+                    <a th:href="@{/results/enter/{id}(id=${req.id})}" class="btn-action"
+                       th:if="${req.status.name() != 'RELEASED' and req.status.name() != 'COMPLETED' and req.status.name() != 'REJECTED'}">
+                        ✏️ Enter Results
+                    </a>
+                    <span th:unless="${req.status.name() != 'RELEASED' and req.status.name() != 'COMPLETED' and req.status.name() != 'REJECTED'}"
+                          th:text="${req.status.name() == 'RELEASED' ? '✅ Released' : (req.status.name() == 'COMPLETED' ? '✓ Complete' : '❌ Rejected')}">
+                            </span>
+                </td>
+            </tr>
+            <tr th:if="${requests.isEmpty()}">
+                <td colspan="6" style="text-align: center; padding: 40px;">No requests found. Click "New Test Request" to create one.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<footer>
+    <p>Electrode QC Lab System | Quality Control Dashboard</p>
+</footer>
+
+<script src="/js/main.js"></script>
+</body>
+</html>
