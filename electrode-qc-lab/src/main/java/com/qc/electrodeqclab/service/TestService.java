@@ -22,6 +22,9 @@ public class TestService {
     @Autowired
     private BatchReleaseRepository releaseRepository;
 
+    @Autowired
+    private PDFGenerationService pdfGeneratorService;
+
     // Create a new test request
     public TestRequest createTestRequest(String batchNumber, String electrodeType, String requestedBy) {
         TestRequest request = new TestRequest();
@@ -90,19 +93,43 @@ public class TestService {
         requestRepository.save(request);
     }
 
-    // Business logic: Auto release batch
+    // Business logic: Auto release batch with PDF generation
     private void autoReleaseBatch(TestRequest request) {
-        BatchRelease release = new BatchRelease();
-        release.setTestRequest(request);
-        release.setIsReleased(true);
-        release.setReleasedAt(LocalDateTime.now());
-        release.setReleasedBy("SYSTEM");
-        release.setCoaFilePath("COA_" + request.getBatchNumber() + ".pdf");
-        release.setQrCodePath("QR_" + request.getBatchNumber() + ".png");
-        releaseRepository.save(release);
+        try {
+            // Generate actual PDF certificate
+            String pdfPath = pdfGeneratorService.generateCOA(request);
 
-        request.setStatus(TestRequest.RequestStatus.RELEASED);
-        requestRepository.save(request);
+            BatchRelease release = new BatchRelease();
+            release.setTestRequest(request);
+            release.setIsReleased(true);
+            release.setReleasedAt(LocalDateTime.now());
+            release.setReleasedBy("SYSTEM");
+            release.setCoaFilePath(pdfPath);
+            release.setQrCodePath("");
+            releaseRepository.save(release);
+
+            request.setStatus(TestRequest.RequestStatus.RELEASED);
+            requestRepository.save(request);
+
+            System.out.println("✅ PDF Certificate generated at: " + pdfPath);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Fallback - release without PDF
+            BatchRelease release = new BatchRelease();
+            release.setTestRequest(request);
+            release.setIsReleased(true);
+            release.setReleasedAt(LocalDateTime.now());
+            release.setReleasedBy("SYSTEM");
+            release.setCoaFilePath("COA_" + request.getBatchNumber() + ".pdf");
+            release.setQrCodePath("");
+            releaseRepository.save(release);
+
+            request.setStatus(TestRequest.RequestStatus.RELEASED);
+            requestRepository.save(request);
+
+            System.out.println("⚠️ PDF generation failed, but batch released");
+        }
     }
 
     // Check if batch can be released
@@ -160,6 +187,7 @@ public class TestService {
     public List<TestRequest> getAllRequests() {
         return requestRepository.findAll();
     }
+
     // Initialize default tests
     public void initializeDefaultTests() {
         if (masterRepository.count() == 0) {
