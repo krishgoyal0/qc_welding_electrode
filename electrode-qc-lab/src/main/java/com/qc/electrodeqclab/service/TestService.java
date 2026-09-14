@@ -128,7 +128,7 @@ public class TestService {
             request.setStatus(TestRequest.RequestStatus.RELEASED);
             requestRepository.save(request);
 
-            System.out.println("⚠️ PDF generation failed, but batch released");
+            System.out.println(" PDF generation failed, but batch released");
         }
     }
 
